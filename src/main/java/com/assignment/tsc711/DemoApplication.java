@@ -34,23 +34,23 @@ public class DemoApplication {
     private final static String columnarKeyword = "Magic123456789123456789123456789";
 
     public static void main(String[] args) throws Exception {
-        System.out.println("Original Message: " + defaultMessage);
+        System.out.println("Original Message size: " + defaultMessage.length());
 
         ColumnarTranspositionCipher cipher = new ColumnarTranspositionCipher(columnarKeyword);
 
         HillCipher hillCipher = new HillCipher(new int[][]{{17, 17, 5}, {21, 18, 21}, {2, 2, 19}});
 
         String encryptedText = hillCipher.encrypt(defaultMessage);
-//        System.out.println("Hill Cipher Encrypted Message: " + encryptedText);
+        System.out.println("Hill Cipher Encrypted Message size:  " + encryptedText.length());
 
         encryptedText = cipher.encrypt(encryptedText);
-//        System.out.println("ColumnarTransposition Cipher Encrypted Message: " + encryptedText);
+        System.out.println("ColumnarTransposition Cipher Encrypted Message size: " + encryptedText.length());
 
         String decryptedText = cipher.decrypt(encryptedText);
-//        System.out.println("ColumnarTransposition Cipher Decrypted Message: " + decryptedText);
+        System.out.println("ColumnarTransposition Cipher Decrypted Message size: " + decryptedText.length());
 
         decryptedText = hillCipher.decrypt(decryptedText);
-//        System.out.println("Hill Cipher Decrypted Message: " + decryptedText);
+        System.out.println("Hill Cipher Decrypted Message size: " + decryptedText.length());
         System.out.println("Encryption result: "+decryptedText.equals(defaultMessage));
     }
 }

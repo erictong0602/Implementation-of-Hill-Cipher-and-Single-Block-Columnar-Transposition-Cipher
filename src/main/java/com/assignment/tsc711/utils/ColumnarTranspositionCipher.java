@@ -12,7 +12,10 @@ public class ColumnarTranspositionCipher {
     }
 
     // this function use columnar transposition cipher algorithm for encryption
-
+    // it create matrix based on keyword length and the plaintext, using X as padding character
+    // character of plain text placed in the matrix row by row
+    // the matrix then read the key position and the result character wil append to encrypted text
+    // finally add the paddinglength at the end of padding length
     public String encrypt(String plaintext) {
         long startTime = System.currentTimeMillis();
         int[] key = getKeyPositions(this.keyword);
@@ -49,12 +52,21 @@ public class ColumnarTranspositionCipher {
         return result;
     }
 
+    // this function is to decrypt encryptedtext using columnar transporsition algorithm
     public String decrypt(String encryptedTextWithPadding) {
+        // start the timer
         long startTime = System.currentTimeMillis();
+
+        // extract padding length from index after A
         int paddingLength = encryptedTextWithPadding.charAt(encryptedTextWithPadding.length() - 1) - 'A';
+
+        //remove it and retrived actual encrypted text
         String encryptedText = encryptedTextWithPadding.substring(0, encryptedTextWithPadding.length() - 1);
 
+        // get key positions array based on keyword
         int[] key = getKeyPositions(this.keyword);
+
+        // build matrix based on keyword length and encrypted text
         int columns = this.keyword.length();
         int rows = encryptedText.length() / columns;
 
@@ -68,6 +80,8 @@ public class ColumnarTranspositionCipher {
             }
         }
 
+        /// matrix read row by row and result append to decrypted Text
+        // the decrypted text should be row * column - padding length
         StringBuilder decryptedText = new StringBuilder();
         int totalChars = rows * columns - paddingLength;
         int charCount = 0;
