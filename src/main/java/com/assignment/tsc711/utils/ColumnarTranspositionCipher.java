@@ -11,6 +11,8 @@ public class ColumnarTranspositionCipher {
         this.key = getKeyPositions(keyword);
     }
 
+    // this function use columnar transposition cipher algorithm for encryption
+
     public String encrypt(String plaintext) {
         long startTime = System.currentTimeMillis();
         int[] key = getKeyPositions(this.keyword);
@@ -86,6 +88,12 @@ public class ColumnarTranspositionCipher {
         return result;
     }
 
+    // return an array of position based on the keyworld.
+    // split keyword into individual characters, sort them,
+    // then find the index of each character in the original keyword
+    // The found index is the stored in the positions array
+    // each matched character is replaced with _ for avoid future match.
+    // array that contain key position is returned
     private static int[] getKeyPositions(String keyword) {
         String[] keyArray = keyword.split("");
         Arrays.sort(keyArray);

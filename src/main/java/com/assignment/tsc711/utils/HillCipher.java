@@ -1,7 +1,5 @@
 package com.assignment.tsc711.utils;
 
-import java.util.Scanner;
-
 public class HillCipher {
     private final String invalidKeyMatrix = "Invalid key matrix. Please enter a matrix with a non-zero determinant modulo 26.";
 
@@ -22,13 +20,18 @@ public class HillCipher {
     }
 
     public String encrypt(String plaintext) {
+        // Start the timer
         long startTime = System.currentTimeMillis();
-        // Convert plaintext to uppercase and pad with 'X' if necessary
+
+        // Add the isUppercase to the array so when decrypt a encrypted text, it will be in the original case
         this.isUppercase = new boolean[plaintext.length()];
         for (int i = 0; i < plaintext.length(); i++) {
             this.isUppercase[i] = Character.isUpperCase(plaintext.charAt(i));
         }
+        // Convert the plaintext to ciphertext
         String result = transformText(plaintext, this.keyMatrix, true);
+
+        // End the timer
         long endTime = System.currentTimeMillis();
         long processingTime = endTime - startTime;
         System.out.println("Processing time: " + processingTime + " ms");
@@ -36,7 +39,10 @@ public class HillCipher {
     }
 
     public String decrypt(String encryptedText) {
+        // Start the timer
         long startTime = System.currentTimeMillis();
+
+        // Convert the ciphertext to plaintext
         String decryptedText = transformText(encryptedText, findInverseMatrix(this.keyMatrix), true);
 
         // Restore the original case of the input plaintext
@@ -46,16 +52,21 @@ public class HillCipher {
             originalCaseDecryptedText.append(this.isUppercase[i] ? c : Character.toLowerCase(c));
         }
         String result = originalCaseDecryptedText.toString();
+
+        // End the timer
         long endTime = System.currentTimeMillis();
         long processingTime = endTime - startTime;
         System.out.println("Processing time: " + processingTime + " ms");
-        // Convert decryptedText to the original case of the input plaintext
+
         return result;
     }
+
+    // transform the input text using the given matrix
     private static String transformText(String text, int[][] keyMatrix, boolean encrypt) {
         StringBuilder transformedText = new StringBuilder();
         int blockSize = keyMatrix.length;
 
+        // Transform the text block by block
         for (int i = 0; i < text.length(); i += blockSize) {
             int[] block = new int[blockSize];
             int validChars = 0;
@@ -69,6 +80,7 @@ public class HillCipher {
                 }
             }
 
+            // If the block is full, transform it
             if (validChars == blockSize || !encrypt) {
                 int[] transformedBlock = multiplyMatrix(keyMatrix, block, encrypt);
                 for (int j = 0; j < blockSize && i + j < text.length(); j++) {
@@ -88,6 +100,10 @@ public class HillCipher {
         return transformedText.toString();
     }
 
+    //perform matrix multiplication between given matrix and vector
+    //if encrypt is true, multiply matrix with vector
+    //if encrypt is false, multiply matrix with vector + 26 to handle negative values
+    // 26 is the number of letters in the alphabet
     private static int[] multiplyMatrix(int[][] matrix, int[] vector, boolean encrypt) {
         int[] result = new int[matrix.length];
         for (int i = 0; i < matrix.length; i++) {
@@ -102,6 +118,7 @@ public class HillCipher {
         return result;
     }
 
+    // calculate modular inverse of matrix
     private static int[][] findInverseMatrix(int[][] matrix) {
         int determinant = findDeterminant(matrix);
         int inverseDeterminant = findModularInverse(determinant, 26);
@@ -125,6 +142,7 @@ public class HillCipher {
         return inverseMatrix;
     }
 
+    // calculate the determinant of 3x3 matrix
     private static int findDeterminant(int[][] matrix) {
         int determinant = matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1]) -
                 matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0]) +
@@ -132,6 +150,7 @@ public class HillCipher {
         return (determinant % 26 + 26) % 26;
     }
 
+    // calculate adjugate of 3x3 matrix
     private static int[][] findAdjugate(int[][] matrix) {
         int[][] adjugate = new int[matrix.length][matrix.length];
 
@@ -148,6 +167,7 @@ public class HillCipher {
         return adjugate;
     }
 
+    // calculate the modular multiplicative inverse of number a modulo m using Euler's theorem
     private static int findModularInverse(int a, int m) {
         a = (a % m + m) % m;
 
@@ -159,10 +179,13 @@ public class HillCipher {
         return -1;
     }
 
+    // calculate the greatest common divisor (gcd) of two numbers using Euclid's algorithm
     private static int gcd(int a, int b) {
+        // until the remainder = 0, return the gcd value
         if (b == 0) {
             return a;
         }
+        // recursive call to take the remainder
         return gcd(b, a % b);
     }
 }
